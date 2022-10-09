@@ -1,0 +1,86 @@
+plugins {
+    id 'com.android.application'
+    id 'com.google.gms.google-services'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'kotlin-parcelize'
+    id 'com.google.firebase.crashlytics'
+}
+
+android {
+    compileSdk 33
+
+    defaultConfig {
+        applicationId "com.nxtlevel.live"
+        minSdk 24
+        targetSdk 33
+        versionCode 9
+        versionName "1.09"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildFeatures {
+        dataBinding = true
+    }
+
+    buildTypes {
+        debug {
+            ndk {
+//                abiFilters.addAll(['armeabi', 'armeabi-v7a', 'x86'])
+//                abiFilters.addAll(['arm64-v8a','armeabi-v7a'])
+                abiFilters.addAll(['armeabi-v7a'])
+            }
+            debuggable true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        release {
+            shrinkResources false
+            debuggable false
+            ndk {
+//                abiFilters.addAll(['arm64-v8a'])
+                abiFilters.addAll(['arm64-v8a','armeabi-v7a'])
+
+//                abiFilters.addAll(['armeabi-v7a','arm64-v8a'])
+//                abiFilters.addAll(['armeabi-v7a','arm64-v8a','x86','x86_64'])
+            }
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+
+    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'com.google.android.material:material:1.6.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx:18.2.13'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+
+    implementation project(path: ':mobilertc')
+    implementation project(path: ':commonlib')
+
+    // ViewModel and LiveData
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1"
+
+    // Retrofit for networking
+    implementation "com.squareup.retrofit2:retrofit:2.9.0"
+    implementation "com.squareup.retrofit2:converter-gson:2.9.0"
+
+    //OkHTTP
+    implementation "com.squareup.okhttp3:okhttp:4.9.2"
+    implementation "com.squareup.okhttp3:logging-interceptor:4.9.1"
+
+    implementation platform('com.google.firebase:firebase-bom:30.4.1')
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+}

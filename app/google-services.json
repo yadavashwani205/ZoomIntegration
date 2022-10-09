@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "100295207653",
+    "project_id": "nxt-level-live",
+    "storage_bucket": "nxt-level-live.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:100295207653:android:ec44f18c63e57a3f4b020c",
+        "android_client_info": {
+          "package_name": "com.nxtlevel.live"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "100295207653-aga31pmolm7s8gppiff361hajc3r1mut.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBlohMyasNzCWqg-YLsmPMOXeuauexINV0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "100295207653-aga31pmolm7s8gppiff361hajc3r1mut.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

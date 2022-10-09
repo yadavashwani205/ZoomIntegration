@@ -1,0 +1,8 @@
+.gradle
+.idea
+mobilertc
+commonlib
+app/release
+app/debug
+build
+app/build
