@@ -47,7 +47,6 @@ class MainActivity : AppCompatActivity(), MeetingClickListener {
         viewModel.viewState.observe(this) { render(it) }
         zoomSdk = ZoomSDK.getInstance()
         supportActionBar?.hide()
-
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (doubleBackToExitPressedOnce) {
