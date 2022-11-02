@@ -19,4 +19,9 @@ interface MainRepositoryImpl {
     ): Resource<ChangePasswordResponse>
 
     suspend fun getMatchSchedule(): Resource<MatchScheduleResponse>
+
+    suspend fun verifyToken(
+        context: Context,
+        token: String
+    ): Resource<VerifyTokenResponse>
 }

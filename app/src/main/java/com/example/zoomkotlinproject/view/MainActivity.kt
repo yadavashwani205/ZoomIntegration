@@ -21,6 +21,7 @@ import com.example.zoomkotlinproject.R
 import com.example.zoomkotlinproject.adapter.MatchScheduleAdapter
 import com.example.zoomkotlinproject.adapter.MeetingAdapter
 import com.example.zoomkotlinproject.databinding.ActivityMainBinding
+import com.example.zoomkotlinproject.databinding.ActivitySecondBinding
 import com.example.zoomkotlinproject.model.MatchSchedule
 import com.example.zoomkotlinproject.model.Meeting
 import com.example.zoomkotlinproject.utils.Constants
@@ -32,7 +33,7 @@ import com.google.android.material.snackbar.Snackbar
 import us.zoom.sdk.*
 
 class MainActivity : AppCompatActivity(), MeetingClickListener {
-    private lateinit var mBinding: ActivityMainBinding
+    private lateinit var mBinding: ActivitySecondBinding
     private lateinit var viewModel: MainViewModel
     private var meeting: Meeting? = null
     private lateinit var zoomSdk: ZoomSDK
@@ -42,7 +43,7 @@ class MainActivity : AppCompatActivity(), MeetingClickListener {
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_second)
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
         viewModel.viewState.observe(this) { render(it) }
         zoomSdk = ZoomSDK.getInstance()
@@ -75,7 +76,7 @@ class MainActivity : AppCompatActivity(), MeetingClickListener {
         mBinding.changePassword.setOnClickListener {
             startActivity(Intent(this, ChangePasswordActivity::class.java))
         }
-        mBinding.pullToRefresh.setOnRefreshListener {
+        mBinding.refreshBtn.setOnClickListener {
             callMeetingApi()
         }
         if (Constants.isOnline(this)) {
@@ -98,7 +99,7 @@ class MainActivity : AppCompatActivity(), MeetingClickListener {
                 }"
             )
         )
-//        getScheduleMeeting()
+        getScheduleMeeting()
     }
 
     private fun getScheduleMeeting() {
@@ -113,7 +114,7 @@ class MainActivity : AppCompatActivity(), MeetingClickListener {
         }
         viewState.meetingResponse?.let {
             mBinding.progressBar.visibility = View.GONE
-            mBinding.pullToRefresh.isRefreshing = false
+//            mBinding.pullToRefresh.isRefreshing = false
             if (it.data != null) {
                 it.data.remainingDays?.let { it1 ->
                     SharedPref.writePrefString(
@@ -134,7 +135,7 @@ class MainActivity : AppCompatActivity(), MeetingClickListener {
 
         viewState.error?.let {
             mBinding.progressBar.visibility = View.GONE
-            mBinding.pullToRefresh.isRefreshing = false
+//            mBinding.pullToRefresh.isRefreshing = false
             snackBar(it)
         }
         viewState.logoutResponse?.let {

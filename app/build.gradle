@@ -28,7 +28,8 @@ android {
             ndk {
 //                abiFilters.addAll(['armeabi', 'armeabi-v7a', 'x86'])
 //                abiFilters.addAll(['arm64-v8a','armeabi-v7a'])
-                abiFilters.addAll(['armeabi-v7a'])
+//                abiFilters.addAll(['armeabi-v7a'])
+                abiFilters.addAll(['armeabi-v7a','x86'])
             }
             debuggable true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'

@@ -10,6 +10,7 @@ data class MainViewState(
     val logoutResponse: LogoutResponse? = null,
     val changePasswordResponse: ChangePasswordResponse? = null,
     val matchScheduleResponse: MatchScheduleResponse? = null,
+    val verifyTokenResponse: VerifyTokenResponse? = null,
 )
 
 sealed class MainViewEvent {
@@ -24,6 +25,8 @@ sealed class MainViewEvent {
     ) : MainViewEvent()
 
     object GetMatchScheduleEvent : MainViewEvent()
+
+    data class VerifyTokenEvent(val context: Context, val token: String) : MainViewEvent()
 }
 
 sealed class MainViewResult {
@@ -42,5 +45,9 @@ sealed class MainViewResult {
     data class GetMatchScheduleResult(
         val matchScheduleResponse: MatchScheduleResponse?,
         val error: String?
+    ) : MainViewResult()
+
+    data class VerifyTokenResult(
+        val verifyTokenResponse: VerifyTokenResponse?, val error: String?
     ) : MainViewResult()
 }

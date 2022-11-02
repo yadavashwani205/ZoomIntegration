@@ -35,4 +35,9 @@ interface ZoomIntegrationApi {
 
     @GET("api/schedule")
     suspend fun getMatchSchedule(): Response<MatchScheduleResponse>
+
+    @GET("api/verify-token")
+    suspend fun verifyToken(
+        @Header("Authorization") token: String
+    ): Response<VerifyTokenResponse>
 }

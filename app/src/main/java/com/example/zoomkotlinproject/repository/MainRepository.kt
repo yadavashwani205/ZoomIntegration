@@ -218,5 +218,39 @@ class MainRepository(private val api: ZoomIntegrationApi) : MainRepositoryImpl {
             }
         }
     }
+    override suspend fun verifyToken(context: Context,token: String): Resource<VerifyTokenResponse> {
+        val response: Response<VerifyTokenResponse>
+        try {
+            response = api.verifyToken(token)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return Resource.Error(VerifyTokenResponse(message = Constants.SOMETHING_WENT_WRONG))
+        }
+        return if (!response.isSuccessful) {
+            Resource.Error(
+                VerifyTokenResponse(
+                    success = false,
+                    message = Constants.getErrorBodyMessage(response))
+            )
+        } else {
+            return if (response.body() == null) {
+                Resource.Error(
+                    VerifyTokenResponse(
+                        success = false,
+                        message = response.message(),
+                    )
+                )
+            } else {
+                when (response.body()!!.success) {
+                    true -> {
+                        Resource.Content(response.body()!!)
+                    }
+                    else -> {
+                        Resource.Error(response.body()!!)
+                    }
+                }
+            }
+        }
+    }
 
 }
