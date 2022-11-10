@@ -20,7 +20,6 @@ import com.example.zoomkotlinproject.BuildConfig
 import com.example.zoomkotlinproject.R
 import com.example.zoomkotlinproject.adapter.MatchScheduleAdapter
 import com.example.zoomkotlinproject.adapter.MeetingAdapter
-import com.example.zoomkotlinproject.databinding.ActivityMainBinding
 import com.example.zoomkotlinproject.databinding.ActivitySecondBinding
 import com.example.zoomkotlinproject.model.MatchSchedule
 import com.example.zoomkotlinproject.model.Meeting
