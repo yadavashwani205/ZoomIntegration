@@ -2,7 +2,6 @@ package com.example.zoomkotlinproject.view
 
 import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -47,6 +46,7 @@ class MainActivity : AppCompatActivity(), MeetingClickListener {
         viewModel.viewState.observe(this) { render(it) }
         zoomSdk = ZoomSDK.getInstance()
         supportActionBar?.hide()
+        initializeZoomSDK()
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (doubleBackToExitPressedOnce) {
@@ -113,7 +113,6 @@ class MainActivity : AppCompatActivity(), MeetingClickListener {
         }
         viewState.meetingResponse?.let {
             mBinding.progressBar.visibility = View.GONE
-//            mBinding.pullToRefresh.isRefreshing = false
             if (it.data != null) {
                 it.data.remainingDays?.let { it1 ->
                     SharedPref.writePrefString(
@@ -138,6 +137,7 @@ class MainActivity : AppCompatActivity(), MeetingClickListener {
             snackBar(it)
         }
         viewState.logoutResponse?.let {
+            finish()
             mBinding.progressBar.visibility = View.VISIBLE
             snackBar(it.message.toString())
             SharedPref.clear(this)
@@ -189,22 +189,22 @@ class MainActivity : AppCompatActivity(), MeetingClickListener {
         mBinding.progressBar.visibility = View.VISIBLE
         this.isAudible = isAudible
         this.meeting = meeting
-        initializeZoomSDK(this)
+        startZoomMeeting()
     }
 
-    private fun initializeZoomSDK(context: Context) {
+    private fun initializeZoomSDK() {
         Log.d("startedMeeting", meeting.toString())
         zoomSdk
         val params = ZoomSDKInitParams().apply {
-            appKey = meeting?.sdkKey
-            appSecret = meeting?.sdkSecret
+            appKey = SharedPref.readPrefString(this@MainActivity,Constants.APP_KEY)
+            appSecret = SharedPref.readPrefString(this@MainActivity,Constants.APP_SECRET)
             domain = "zoom.us"
             enableLog = true
         }
         val listener = object : ZoomSDKInitializeListener {
             override fun onZoomSDKInitializeResult(p0: Int, p1: Int) {
                 if (p0 == 0) {
-                    startZoomMeeting()
+//                    startZoomMeeting()
                 } else {
                     mBinding.progressBar.visibility = View.GONE
                     initializeErrorCode(p0)
@@ -215,7 +215,7 @@ class MainActivity : AppCompatActivity(), MeetingClickListener {
 
             }
         }
-        zoomSdk.initialize(context, listener, params)
+        zoomSdk.initialize(this, listener, params)
     }
 
     private fun startZoomMeeting() {

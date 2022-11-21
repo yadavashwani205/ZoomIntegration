@@ -14,7 +14,7 @@ data class MainViewState(
 )
 
 sealed class MainViewEvent {
-    data class LoginEvent(val userName: String, val password: String) : MainViewEvent()
+    data class LoginEvent(val userName: String, val password: String,val device_token: String) : MainViewEvent()
     data class GetMeetingEvent(val context: Context, val token: String) : MainViewEvent()
     data class LogoutEvent(val context: Context, val token: String) : MainViewEvent()
     data class ChangePasswordEvent(

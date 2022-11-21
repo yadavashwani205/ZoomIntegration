@@ -25,6 +25,8 @@ object Constants {
     const val LATEST_APP_VERSION="LATEST_APP_VERSION"
     const val MIN_APP_VERSION="MIN_APP_VERSION"
     const val IS_NOW_LOGGED_IN = "IS_NOW_LOGGED_IN"
+    const val APP_KEY="APP_KEY"
+    const val APP_SECRET="APP_SECRET"
 
 
     fun hideKeyboard(activity: Activity) {

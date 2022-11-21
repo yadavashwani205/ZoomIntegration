@@ -12,10 +12,10 @@ import retrofit2.Response
 import java.lang.Exception
 
 class MainRepository(private val api: ZoomIntegrationApi) : MainRepositoryImpl {
-    override suspend fun login(userName: String, password: String): Resource<LoginResponse> {
+    override suspend fun login(userName: String, password: String, deviceToken: String): Resource<LoginResponse> {
         val response: Response<LoginResponse>
         try {
-            response = api.login(userName, password)
+            response = api.login(userName, password, deviceToken)
         } catch (e: Exception) {
             e.printStackTrace()
             return Resource.Error(LoginResponse(message = Constants.SOMETHING_WENT_WRONG))

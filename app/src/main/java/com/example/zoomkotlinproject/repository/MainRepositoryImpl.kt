@@ -5,7 +5,7 @@ import com.example.zoomkotlinproject.model.*
 import com.example.zoomkotlinproject.utils.Resource
 
 interface MainRepositoryImpl {
-    suspend fun login(userName: String, password: String): Resource<LoginResponse>
+    suspend fun login(userName: String, password: String,deviceToken: String): Resource<LoginResponse>
 
     suspend fun getMeetings(context: Context, token: String): Resource<MeetingResponse>
 

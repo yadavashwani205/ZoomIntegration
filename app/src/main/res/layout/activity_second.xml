@@ -9,16 +9,6 @@
         android:background="@drawable/main_logo"
         tools:context=".MainActivity">
 
-        <androidx.constraintlayout.utils.widget.ImageFilterView
-            android:id="@+id/change_password"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_margin="8dp"
-            android:padding="12dp"
-            android:src="@drawable/ic_baseline_settings_24"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/meeting_rv"
             android:layout_width="wrap_content"
@@ -73,6 +63,19 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             tools:text="Your Account will expire in days" />
+
+        <androidx.constraintlayout.utils.widget.ImageFilterView
+            android:id="@+id/change_password"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_margin="8dp"
+            android:padding="12dp"
+            android:src="@drawable/ic_baseline_settings_24"
+            app:layout_constraintBottom_toBottomOf="@id/logout_btn"
+            app:layout_constraintTop_toTopOf="@id/logout_btn"
+            app:layout_constraintEnd_toStartOf="@id/logout_btn"
+            app:layout_constraintStart_toStartOf="parent"
+            />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/logout_btn"

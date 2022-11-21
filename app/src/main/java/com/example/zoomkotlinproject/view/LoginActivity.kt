@@ -1,7 +1,9 @@
 package com.example.zoomkotlinproject.view
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -19,6 +21,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var mBinding: ActivityLoginBinding
     private lateinit var viewModel: MainViewModel
 
+    @SuppressLint("HardwareIds")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_login)
@@ -51,11 +54,16 @@ class LoginActivity : AppCompatActivity() {
                 }
                 else -> {
                     if (Constants.isOnline(this)) {
+                        val deviceId = Settings.Secure.getString(
+                            contentResolver,
+                            Settings.Secure.ANDROID_ID
+                        )
                         mBinding.progress.visibility = View.VISIBLE
                         viewModel.onEvent(
                             MainViewEvent.LoginEvent(
                                 mBinding.userName.text.toString(),
-                                mBinding.password.text.toString()
+                                mBinding.password.text.toString(),
+                                device_token = deviceId
                             )
                         )
                     } else {
@@ -89,6 +97,8 @@ class LoginActivity : AppCompatActivity() {
                     it1
                 )
             }
+            SharedPref.writePrefString(this,Constants.APP_KEY,it.data?.appKey?:"")
+            SharedPref.writePrefString(this,Constants.APP_SECRET,it.data?.appSecret?:"")
             SharedPref.writePrefInt(this, Constants.MIN_APP_VERSION, it.data?.min_apk_version ?: 0)
             SharedPref.writePrefInt(
                 this,

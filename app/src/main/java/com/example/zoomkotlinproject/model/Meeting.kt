@@ -16,12 +16,6 @@ data class Meeting(
     @SerializedName("passcode")
     @Expose
     val password: String? = null,
-    @SerializedName("sdk_key")
-    @Expose
-    val sdkKey: String? = null,
-    @SerializedName("sdk_secret")
-    @Expose
-    val sdkSecret: String? = null,
     @SerializedName("name")
     @Expose
     val name: String? = null,

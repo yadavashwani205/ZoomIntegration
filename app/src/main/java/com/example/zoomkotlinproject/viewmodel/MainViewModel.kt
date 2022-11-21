@@ -13,7 +13,6 @@ import com.example.zoomkotlinproject.viewstate.MainViewEvent
 import com.example.zoomkotlinproject.viewstate.MainViewResult
 import com.example.zoomkotlinproject.viewstate.MainViewState
 import kotlinx.coroutines.launch
-import retrofit2.create
 
 class MainViewModel : ViewModel() {
     private val mutableLiveData: MutableLiveData<MainViewState> = MutableLiveData()
@@ -28,7 +27,7 @@ class MainViewModel : ViewModel() {
 
     fun onEvent(event: MainViewEvent) {
         when (event) {
-            is MainViewEvent.LoginEvent -> login(event.userName, event.password)
+            is MainViewEvent.LoginEvent -> login(event.userName, event.password,event.device_token)
             is MainViewEvent.GetMeetingEvent -> getMeetings(event.context, event.token)
             is MainViewEvent.LogoutEvent -> logout(event.context, event.token)
             is MainViewEvent.ChangePasswordEvent -> changePassword(
@@ -129,11 +128,11 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    private fun login(userName: String, password: String) {
+    private fun login(userName: String, password: String, deviceToken: String) {
         viewModelScope.launch {
             val instance =
                 ZoomIntegrationRetro.getRetroInstance().create(ZoomIntegrationApi::class.java)
-            when (val result = MainRepository(instance).login(userName, password)) {
+            when (val result = MainRepository(instance).login(userName, password,deviceToken)) {
                 is Resource.Content -> resultToViewState(
                     Resource.Content(
                         MainViewResult.LoginResult(
