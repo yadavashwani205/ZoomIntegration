@@ -1,7 +1,6 @@
 package com.example.zoomkotlinproject.network
 
 import com.example.zoomkotlinproject.model.*
-import com.example.zoomkotlinproject.utils.Resource
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Header
