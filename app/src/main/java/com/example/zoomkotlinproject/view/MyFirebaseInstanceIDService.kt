@@ -7,6 +7,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import android.widget.RemoteViews
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
@@ -23,8 +24,9 @@ class MyFirebaseInstanceIDService : FirebaseMessagingService() {
     private lateinit var notificationManager: NotificationManager
 
     override fun onMessageReceived(message: RemoteMessage) {
+        Log.d("asasas","received notification")
         if(message.notification!=null)
-        generateNotification(message.notification?.title!!, message.notification?.body!!)
+        generateNotification(message.notification?.title?:"", message.notification?.body?:"")
     }
     @SuppressLint("UnspecifiedImmutableFlag")
     fun generateNotification(title: String, message: String) {
@@ -35,7 +37,7 @@ class MyFirebaseInstanceIDService : FirebaseMessagingService() {
             PendingIntent.getActivity(this, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         val builder = NotificationCompat.Builder(this, channelId)
-            .setSmallIcon(R.drawable.ic_baseline_notifications_24)
+            .setSmallIcon(R.drawable.nxt_logo)
             .setAutoCancel(true)
             .setVibrate(longArrayOf(1000, 1000, 1000, 1000))
             .setContentIntent(pendingIntent)
