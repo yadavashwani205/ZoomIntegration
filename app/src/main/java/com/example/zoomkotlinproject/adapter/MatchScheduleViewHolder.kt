@@ -33,10 +33,9 @@ class MatchScheduleViewHolder(private val binding: ItemMatchScheduleBinding) :
             binding.date.text = DateFormat.format("dd", date)
             binding.day.text = DateFormat.format("EEEE", date)
             binding.month.text = DateFormat.format("MMM", date)
-            binding.time.text = Time(date!!.time).toString()
+            binding.time.text = SimpleDateFormat("hh:mm a", Locale.getDefault()).format(date)
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
-
 }

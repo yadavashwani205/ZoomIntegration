@@ -87,4 +87,6 @@ dependencies {
 
     implementation 'com.google.firebase:firebase-messaging-ktx:23.1.0'
 
+    //Lottie
+    implementation "com.airbnb.android:lottie:4.0.0"
 }

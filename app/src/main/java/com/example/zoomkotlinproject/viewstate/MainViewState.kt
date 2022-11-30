@@ -11,6 +11,7 @@ data class MainViewState(
     val changePasswordResponse: ChangePasswordResponse? = null,
     val matchScheduleResponse: MatchScheduleResponse? = null,
     val verifyTokenResponse: VerifyTokenResponse? = null,
+    val verifyTokenError: String? = null
 )
 
 sealed class MainViewEvent {
@@ -48,6 +49,6 @@ sealed class MainViewResult {
     ) : MainViewResult()
 
     data class VerifyTokenResult(
-        val verifyTokenResponse: VerifyTokenResponse?, val error: String?
+        val verifyTokenResponse: VerifyTokenResponse?, val verifyTokenError: String?
     ) : MainViewResult()
 }

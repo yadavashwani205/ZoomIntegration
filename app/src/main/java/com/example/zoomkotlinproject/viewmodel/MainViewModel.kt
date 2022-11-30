@@ -27,7 +27,7 @@ class MainViewModel : ViewModel() {
 
     fun onEvent(event: MainViewEvent) {
         when (event) {
-            is MainViewEvent.LoginEvent -> login(event.userName, event.password,event.device_token)
+            is MainViewEvent.LoginEvent -> login(event.userName, event.password, event.device_token)
             is MainViewEvent.GetMeetingEvent -> getMeetings(event.context, event.token)
             is MainViewEvent.LogoutEvent -> logout(event.context, event.token)
             is MainViewEvent.ChangePasswordEvent -> changePassword(
@@ -50,19 +50,28 @@ class MainViewModel : ViewModel() {
                     Resource.Content(
                         MainViewResult.VerifyTokenResult(
                             verifyTokenResponse = result.packet,
-                            error = null
+                            verifyTokenError = null
                         )
                     )
                 )
-                is Resource.Error ->
+                is Resource.Error -> {
+                    if(result.packet.success == false || result.packet.hasTokenExpired==true)
                     resultToViewState(
                         Resource.Error(
                             MainViewResult.VerifyTokenResult(
                                 verifyTokenResponse = null,
-                                error = result.packet.message
+                                verifyTokenError = result.packet.message
                             )
                         )
                     )
+                    else
+                        Resource.Content(
+                            MainViewResult.VerifyTokenResult(
+                                verifyTokenResponse = result.packet,
+                                verifyTokenError = null
+                            )
+                        )
+                }
             }
         }
     }
@@ -132,7 +141,7 @@ class MainViewModel : ViewModel() {
         viewModelScope.launch {
             val instance =
                 ZoomIntegrationRetro.getRetroInstance().create(ZoomIntegrationApi::class.java)
-            when (val result = MainRepository(instance).login(userName, password,deviceToken)) {
+            when (val result = MainRepository(instance).login(userName, password, deviceToken)) {
                 is Resource.Content -> resultToViewState(
                     Resource.Content(
                         MainViewResult.LoginResult(
@@ -216,7 +225,8 @@ class MainViewModel : ViewModel() {
                     logoutResponse = null,
                     changePasswordResponse = null,
                     matchScheduleResponse = null,
-                    verifyTokenResponse = null
+                    verifyTokenResponse = null,
+                    verifyTokenError = null
                 )
                 is MainViewResult.GetMeetingResult -> currentViewState.copy(
                     loginResponse = null,
@@ -225,7 +235,8 @@ class MainViewModel : ViewModel() {
                     logoutResponse = null,
                     changePasswordResponse = null,
                     matchScheduleResponse = null,
-                    verifyTokenResponse = null
+                    verifyTokenResponse = null,
+                    verifyTokenError = null
                 )
                 is MainViewResult.LogoutResult -> currentViewState.copy(
                     loginResponse = null,
@@ -234,7 +245,8 @@ class MainViewModel : ViewModel() {
                     logoutResponse = result.packet.logoutResponse,
                     changePasswordResponse = null,
                     matchScheduleResponse = null,
-                    verifyTokenResponse = null
+                    verifyTokenResponse = null,
+                    verifyTokenError = null
                 )
                 is MainViewResult.ChangePasswordResult -> currentViewState.copy(
                     loginResponse = null,
@@ -243,7 +255,8 @@ class MainViewModel : ViewModel() {
                     logoutResponse = null,
                     changePasswordResponse = result.packet.changePasswordResponse,
                     matchScheduleResponse = null,
-                    verifyTokenResponse = null
+                    verifyTokenResponse = null,
+                    verifyTokenError = null
                 )
                 is MainViewResult.GetMatchScheduleResult -> currentViewState.copy(
                     loginResponse = null,
@@ -252,7 +265,8 @@ class MainViewModel : ViewModel() {
                     logoutResponse = null,
                     changePasswordResponse = null,
                     matchScheduleResponse = result.packet.matchScheduleResponse,
-                    verifyTokenResponse = null
+                    verifyTokenResponse = null,
+                    verifyTokenError = null
                 )
                 is MainViewResult.VerifyTokenResult -> currentViewState.copy(
                     loginResponse = null,
@@ -261,7 +275,8 @@ class MainViewModel : ViewModel() {
                     logoutResponse = null,
                     changePasswordResponse = null,
                     matchScheduleResponse = null,
-                    verifyTokenResponse = result.packet.verifyTokenResponse
+                    verifyTokenResponse = result.packet.verifyTokenResponse,
+                    verifyTokenError = null
                 )
             }
             is Resource.Error -> {
@@ -273,7 +288,8 @@ class MainViewModel : ViewModel() {
                         logoutResponse = null,
                         changePasswordResponse = null,
                         matchScheduleResponse = null,
-                        verifyTokenResponse = null
+                        verifyTokenResponse = null,
+                        verifyTokenError = null
                     )
                     is MainViewResult.GetMeetingResult -> currentViewState.copy(
                         loginResponse = null,
@@ -282,7 +298,8 @@ class MainViewModel : ViewModel() {
                         logoutResponse = null,
                         changePasswordResponse = null,
                         matchScheduleResponse = null,
-                        verifyTokenResponse = null
+                        verifyTokenResponse = null,
+                        verifyTokenError = null
                     )
                     is MainViewResult.LogoutResult -> currentViewState.copy(
                         loginResponse = null,
@@ -291,7 +308,8 @@ class MainViewModel : ViewModel() {
                         logoutResponse = null,
                         changePasswordResponse = null,
                         matchScheduleResponse = null,
-                        verifyTokenResponse = null
+                        verifyTokenResponse = null,
+                        verifyTokenError = null
                     )
                     is MainViewResult.ChangePasswordResult -> currentViewState.copy(
                         loginResponse = null,
@@ -300,7 +318,8 @@ class MainViewModel : ViewModel() {
                         logoutResponse = null,
                         changePasswordResponse = null,
                         matchScheduleResponse = null,
-                        verifyTokenResponse = null
+                        verifyTokenResponse = null,
+                        verifyTokenError = null
                     )
                     is MainViewResult.GetMatchScheduleResult -> currentViewState.copy(
                         loginResponse = null,
@@ -309,16 +328,18 @@ class MainViewModel : ViewModel() {
                         logoutResponse = null,
                         changePasswordResponse = null,
                         matchScheduleResponse = null,
-                        verifyTokenResponse = null
+                        verifyTokenResponse = null,
+                        verifyTokenError = null
                     )
                     is MainViewResult.VerifyTokenResult -> currentViewState.copy(
                         loginResponse = null,
-                        error = result.packet.error,
+                        error = null,
                         meetingResponse = null,
                         logoutResponse = null,
                         changePasswordResponse = null,
                         matchScheduleResponse = null,
-                        verifyTokenResponse = null
+                        verifyTokenResponse = null,
+                        verifyTokenError = result.packet.verifyTokenError
                     )
                 }
             }

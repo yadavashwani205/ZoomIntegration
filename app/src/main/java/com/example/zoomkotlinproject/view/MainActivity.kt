@@ -9,6 +9,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -37,6 +38,7 @@ class MainActivity : AppCompatActivity(), MeetingClickListener {
     private lateinit var zoomSdk: ZoomSDK
     private var isAudible = false
     private var doubleBackToExitPressedOnce = false
+    private val handler = Handler(Looper.getMainLooper())
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,19 +72,44 @@ class MainActivity : AppCompatActivity(), MeetingClickListener {
             }
         }
         mBinding.logoutBtn.setOnClickListener {
-            logoutDialog()
+            if (Constants.isOnline(this)) {
+                logoutDialog()
+            } else {
+                snackBar(getString(R.string.you_are_offline_please_connect_to_internet))
+            }
         }
         mBinding.changePassword.setOnClickListener {
             startActivity(Intent(this, ChangePasswordActivity::class.java))
         }
         mBinding.refreshBtn.setOnClickListener {
-            callMeetingApi()
+            if (Constants.isOnline(this)) {
+                callMeetingApi()
+            } else {
+                snackBar(getString(R.string.you_are_offline_please_connect_to_internet))
+            }
         }
         if (Constants.isOnline(this)) {
             callMeetingApi()
         } else {
             snackBar(getString(R.string.you_are_offline_please_connect_to_internet))
         }
+        handler.postDelayed(object : Runnable {
+            override fun run() {
+                if (Constants.isOnline(this@MainActivity))
+                    viewModel.onEvent(
+                        MainViewEvent.VerifyTokenEvent(
+                            this@MainActivity,
+                            "Bearer ${
+                                SharedPref.readPrefString(
+                                    this@MainActivity,
+                                    Constants.TOKEN
+                                )
+                            }"
+                        )
+                    )
+                handler.postDelayed(this, 1000 * 60 * 1)
+            }
+        }, 1000 * 60 * 1)
     }
 
     private fun callMeetingApi() {
@@ -102,7 +129,8 @@ class MainActivity : AppCompatActivity(), MeetingClickListener {
     }
 
     private fun getScheduleMeeting() {
-        viewModel.onEvent(MainViewEvent.GetMatchScheduleEvent)
+        if (Constants.isOnline(this))
+            viewModel.onEvent(MainViewEvent.GetMatchScheduleEvent)
     }
 
     private fun render(viewState: MainViewState?) {
@@ -111,6 +139,18 @@ class MainActivity : AppCompatActivity(), MeetingClickListener {
         viewState.matchScheduleResponse?.let {
             initializeMatchScheduleAdapter(it.data)
         }
+        viewState.verifyTokenResponse?.let {
+
+        }
+        viewState.verifyTokenError?.let {
+            finish()
+            SharedPref.clear(this@MainActivity)
+            Toast.makeText(this, "Logged in from another device", Toast.LENGTH_LONG).show()
+            val intent = Intent(this@MainActivity, LoginActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+        }
+
         viewState.meetingResponse?.let {
             mBinding.progressBar.visibility = View.GONE
             if (it.data != null) {
@@ -133,7 +173,6 @@ class MainActivity : AppCompatActivity(), MeetingClickListener {
 
         viewState.error?.let {
             mBinding.progressBar.visibility = View.GONE
-//            mBinding.pullToRefresh.isRefreshing = false
             snackBar(it)
         }
         viewState.logoutResponse?.let {
@@ -196,8 +235,8 @@ class MainActivity : AppCompatActivity(), MeetingClickListener {
         Log.d("startedMeeting", meeting.toString())
         zoomSdk
         val params = ZoomSDKInitParams().apply {
-            appKey = SharedPref.readPrefString(this@MainActivity,Constants.APP_KEY)
-            appSecret = SharedPref.readPrefString(this@MainActivity,Constants.APP_SECRET)
+            appKey = SharedPref.readPrefString(this@MainActivity, Constants.APP_KEY)
+            appSecret = SharedPref.readPrefString(this@MainActivity, Constants.APP_SECRET)
             domain = "zoom.us"
             enableLog = true
         }

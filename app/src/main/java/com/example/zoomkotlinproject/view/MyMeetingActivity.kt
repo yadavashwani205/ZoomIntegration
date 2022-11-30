@@ -17,7 +17,7 @@ import us.zoom.sdk.MeetingActivity
 
 class MyMeetingActivity : MeetingActivity() {
 
-    val handler = Handler(Looper.getMainLooper())
+    private val handler = Handler(Looper.getMainLooper())
     private lateinit var viewModel: MainViewModel
 
     override fun onCreate(p0: Bundle?) {
@@ -49,7 +49,7 @@ class MyMeetingActivity : MeetingActivity() {
 
         }
 
-        viewState.error?.let {
+        viewState.verifyTokenError?.let {
             finish()
             ZmAssignHostMgr.getInstance()
                 .leaveMeetingWithBtnAction(this, LeaveBtnAction.BO_LEAVE_MEETING_BTN)

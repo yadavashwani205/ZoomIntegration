@@ -52,9 +52,10 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/left_layout"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toStartOf="@id/right_layout"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/venue">
 
@@ -68,7 +69,7 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/first_team_name"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:textColor="@color/white"
@@ -77,7 +78,8 @@
                     app:layout_constraintBottom_toBottomOf="@+id/first_team_flag"
                     app:layout_constraintStart_toEndOf="@id/first_team_flag"
                     app:layout_constraintTop_toTopOf="@+id/first_team_flag"
-                    app:textAllCaps="true" />
+                    app:textAllCaps="true"
+                    tools:text="First team name"/>
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/vs"
@@ -110,7 +112,8 @@
                     app:layout_constraintBottom_toBottomOf="@+id/second_team_flag"
                     app:layout_constraintStart_toEndOf="@id/second_team_flag"
                     app:layout_constraintTop_toTopOf="@+id/second_team_flag"
-                    app:textAllCaps="true" />
+                    app:textAllCaps="true"
+                    tools:text="Second Team Name"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

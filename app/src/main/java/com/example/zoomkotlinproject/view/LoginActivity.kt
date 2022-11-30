@@ -1,10 +1,14 @@
 package com.example.zoomkotlinproject.view
 
+import android.animation.Animator
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
+import android.view.animation.Animation
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -22,7 +26,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 class LoginActivity : AppCompatActivity() {
     private lateinit var mBinding: ActivityLoginBinding
     private lateinit var viewModel: MainViewModel
-    private var token:String? = null
+    private var token: String? = null
 
     @SuppressLint("HardwareIds")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,6 +39,33 @@ class LoginActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
+        mBinding.lottieView.setAnimation(R.raw.basket_ball_playing)
+        mBinding.lottieView.playAnimation()
+        val myAnimation: ArrayList<Int> = arrayListOf()
+        myAnimation.add(R.raw.football_team_players)
+        myAnimation.add(R.raw.stadium)
+        myAnimation.add(R.raw.wicket_cricket)
+        myAnimation.add(R.raw.basket_ball_playing)
+        var animationNumber = 0
+        mBinding.lottieView.addAnimatorListener(object : Animator.AnimatorListener {
+            override fun onAnimationStart(animation: Animator) {}
+            override fun onAnimationEnd(animation: Animator) {
+//                mBinding.lottieView.pauseAnimation()
+                mBinding.lottieView.setAnimation(myAnimation[animationNumber])
+                mBinding.lottieView.playAnimation()
+                if (animationNumber < myAnimation.size - 1) {
+                    animationNumber++
+                } else {
+                    animationNumber = 0
+                }
+
+            }
+
+            override fun onAnimationCancel(animation: Animator) {}
+
+            override fun onAnimationRepeat(animation: Animator) {}
+
+        })
         FirebaseMessaging.getInstance().token.addOnCompleteListener(
             OnCompleteListener { task ->
                 if (!task.isSuccessful) {
@@ -66,17 +97,21 @@ class LoginActivity : AppCompatActivity() {
                 }
                 else -> {
                     if (Constants.isOnline(this)) {
-
-                        if(token == null){
+                        if (token == null) {
                             FirebaseMessaging.getInstance().token.addOnCompleteListener(
                                 OnCompleteListener { task ->
                                     if (!task.isSuccessful) {
-                                        Log.w("asasas", "Fetching FCM registration token failed", task.exception)
+                                        Log.w(
+                                            "asasas",
+                                            "Fetching FCM registration token failed",
+                                            task.exception
+                                        )
                                         return@OnCompleteListener
                                     }
                                     token = task.result
                                 })
                         }
+                        Log.d("asasas==>Token", token.toString())
                         mBinding.progress.visibility = View.VISIBLE
                         viewModel.onEvent(
                             MainViewEvent.LoginEvent(
@@ -116,8 +151,8 @@ class LoginActivity : AppCompatActivity() {
                     it1
                 )
             }
-            SharedPref.writePrefString(this,Constants.APP_KEY,it.data?.appKey?:"")
-            SharedPref.writePrefString(this,Constants.APP_SECRET,it.data?.appSecret?:"")
+            SharedPref.writePrefString(this, Constants.APP_KEY, it.data?.appKey ?: "")
+            SharedPref.writePrefString(this, Constants.APP_SECRET, it.data?.appSecret ?: "")
             SharedPref.writePrefInt(this, Constants.MIN_APP_VERSION, it.data?.min_apk_version ?: 0)
             SharedPref.writePrefInt(
                 this,
