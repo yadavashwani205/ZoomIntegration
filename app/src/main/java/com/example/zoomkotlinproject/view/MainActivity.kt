@@ -18,10 +18,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.zoomkotlinproject.BuildConfig
 import com.example.zoomkotlinproject.R
-import com.example.zoomkotlinproject.adapter.MatchScheduleAdapter
 import com.example.zoomkotlinproject.adapter.MeetingAdapter
-import com.example.zoomkotlinproject.databinding.ActivitySecondBinding
-import com.example.zoomkotlinproject.model.MatchSchedule
+import com.example.zoomkotlinproject.databinding.ActivityMainBinding
 import com.example.zoomkotlinproject.model.Meeting
 import com.example.zoomkotlinproject.utils.Constants
 import com.example.zoomkotlinproject.utils.SharedPref
@@ -32,7 +30,7 @@ import com.google.android.material.snackbar.Snackbar
 import us.zoom.sdk.*
 
 class MainActivity : AppCompatActivity(), MeetingClickListener {
-    private lateinit var mBinding: ActivitySecondBinding
+    private lateinit var mBinding: ActivityMainBinding
     private lateinit var viewModel: MainViewModel
     private var meeting: Meeting? = null
     private lateinit var zoomSdk: ZoomSDK
@@ -43,7 +41,7 @@ class MainActivity : AppCompatActivity(), MeetingClickListener {
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_second)
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
         viewModel.viewState.observe(this) { render(it) }
         zoomSdk = ZoomSDK.getInstance()
@@ -70,6 +68,12 @@ class MainActivity : AppCompatActivity(), MeetingClickListener {
             if (SharedPref.readPrefInt(this, Constants.LATEST_APP_VERSION) > versionCode) {
                 showAlertDialog(getString(R.string.latest_app_available_on_play_store), true)
             }
+        }
+        mBinding.scheduleBtn.setOnClickListener {
+            val transaction = supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.main_container, MatchSchedulerFragment(), "MatchSchedulerFragment")
+            transaction.addToBackStack(null)
+            transaction.commit()
         }
         mBinding.logoutBtn.setOnClickListener {
             if (Constants.isOnline(this)) {
@@ -125,20 +129,11 @@ class MainActivity : AppCompatActivity(), MeetingClickListener {
                 }"
             )
         )
-        getScheduleMeeting()
-    }
-
-    private fun getScheduleMeeting() {
-        if (Constants.isOnline(this))
-            viewModel.onEvent(MainViewEvent.GetMatchScheduleEvent)
     }
 
     private fun render(viewState: MainViewState?) {
         if (viewState == null) return
 
-        viewState.matchScheduleResponse?.let {
-            initializeMatchScheduleAdapter(it.data)
-        }
         viewState.verifyTokenResponse?.let {
 
         }
@@ -189,14 +184,6 @@ class MainActivity : AppCompatActivity(), MeetingClickListener {
         mBinding.meetingRv.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         mBinding.meetingRv.adapter = adapter
-        adapter.submitList(data)
-    }
-
-    private fun initializeMatchScheduleAdapter(data: List<MatchSchedule>?) {
-        val adapter = MatchScheduleAdapter()
-        mBinding.matchScheduleRv.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        mBinding.matchScheduleRv.adapter = adapter
         adapter.submitList(data)
     }
 

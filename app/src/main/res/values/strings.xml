@@ -42,4 +42,9 @@
     <string name="token_wrong">Token wrong</string>
     <string name="please_click_back">Please click back again to exit</string>
     <string name="vs">vs</string>
+    <string name="back">Back</string>
+    <string name="schedule">Match Schedule</string>
+    <string name="no_schedule">No Schedule</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
