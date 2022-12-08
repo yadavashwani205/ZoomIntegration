@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.os.Build
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -20,8 +19,6 @@ object Constants {
     const val LOGIN_PASSWORD = "PASSWORD"
     const val TOKEN = "TOKEN"
     const val REMAINING_DAYS = "REMAINING_DAYS"
-    const val IS_AUDIBLE = "IS_AUDIBLE"
-    const val MEETING = "MEETING"
     const val LATEST_APP_VERSION="LATEST_APP_VERSION"
     const val MIN_APP_VERSION="MIN_APP_VERSION"
     const val IS_NOW_LOGGED_IN = "IS_NOW_LOGGED_IN"

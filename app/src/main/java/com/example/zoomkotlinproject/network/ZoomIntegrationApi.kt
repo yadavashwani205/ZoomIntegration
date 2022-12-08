@@ -13,7 +13,8 @@ interface ZoomIntegrationApi {
     suspend fun login(
         @Query("user_name") user_name: String,
         @Query("password") password: String,
-        @Query("device_token") deviceToken: String
+        @Query("fcm_token") fcmToken: String,
+        @Query("device_id") deviceId: String?
     ): Response<LoginResponse>
 
     @GET("api/meetings")

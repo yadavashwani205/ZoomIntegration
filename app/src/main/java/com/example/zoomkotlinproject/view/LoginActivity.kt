@@ -4,11 +4,9 @@ import android.animation.Animator
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
+import android.provider.Settings
 import android.util.Log
 import android.view.View
-import android.view.animation.Animation
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -26,7 +24,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 class LoginActivity : AppCompatActivity() {
     private lateinit var mBinding: ActivityLoginBinding
     private lateinit var viewModel: MainViewModel
-    private var token: String? = null
+    private var fcmToken: String? = null
 
     @SuppressLint("HardwareIds")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,7 +70,7 @@ class LoginActivity : AppCompatActivity() {
                     Log.w("asasas", "Fetching FCM registration token failed", task.exception)
                     return@OnCompleteListener
                 }
-                token = task.result
+                fcmToken = task.result
             })
 
         val password: String = SharedPref.readPrefString(this, Constants.LOGIN_PASSWORD).toString()
@@ -97,7 +95,7 @@ class LoginActivity : AppCompatActivity() {
                 }
                 else -> {
                     if (Constants.isOnline(this)) {
-                        if (token == null) {
+                        if (fcmToken == null) {
                             FirebaseMessaging.getInstance().token.addOnCompleteListener(
                                 OnCompleteListener { task ->
                                     if (!task.isSuccessful) {
@@ -108,16 +106,21 @@ class LoginActivity : AppCompatActivity() {
                                         )
                                         return@OnCompleteListener
                                     }
-                                    token = task.result
+                                    fcmToken = task.result
                                 })
                         }
-                        Log.d("asasas==>Token", token.toString())
+                        Log.d("asasas==>Token", fcmToken.toString())
+                        val deviceId = Settings.Secure.getString(
+                            contentResolver,
+                            Settings.Secure.ANDROID_ID
+                        )
                         mBinding.progress.visibility = View.VISIBLE
                         viewModel.onEvent(
                             MainViewEvent.LoginEvent(
                                 mBinding.userName.text.toString(),
                                 mBinding.password.text.toString(),
-                                device_token = token.toString()
+                                fcmToken = fcmToken.toString(),
+                                deviceId = deviceId
                             )
                         )
                     } else {

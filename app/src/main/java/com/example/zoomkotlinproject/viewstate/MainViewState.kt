@@ -9,13 +9,13 @@ data class MainViewState(
     val meetingResponse: MeetingResponse? = null,
     val logoutResponse: LogoutResponse? = null,
     val changePasswordResponse: ChangePasswordResponse? = null,
-    val matchScheduleResponse: MatchScheduleResponse? = null,
-    val verifyTokenResponse: VerifyTokenResponse? = null,
-    val verifyTokenError: String? = null
+    val matchScheduleResponse: MatchScheduleResponse? = null
 )
 
 sealed class MainViewEvent {
-    data class LoginEvent(val userName: String, val password: String,val device_token: String) : MainViewEvent()
+    data class LoginEvent(val userName: String, val password: String, val fcmToken: String, val deviceId: String) :
+        MainViewEvent()
+
     data class GetMeetingEvent(val context: Context, val token: String) : MainViewEvent()
     data class LogoutEvent(val context: Context, val token: String) : MainViewEvent()
     data class ChangePasswordEvent(
@@ -46,9 +46,5 @@ sealed class MainViewResult {
     data class GetMatchScheduleResult(
         val matchScheduleResponse: MatchScheduleResponse?,
         val error: String?
-    ) : MainViewResult()
-
-    data class VerifyTokenResult(
-        val verifyTokenResponse: VerifyTokenResponse?, val verifyTokenError: String?
     ) : MainViewResult()
 }

@@ -2,20 +2,27 @@ package com.example.zoomkotlinproject.repository
 
 import android.content.Context
 import android.content.Intent
+import android.widget.Toast
 import com.example.zoomkotlinproject.model.*
 import com.example.zoomkotlinproject.network.ZoomIntegrationApi
 import com.example.zoomkotlinproject.utils.Constants
 import com.example.zoomkotlinproject.utils.Resource
 import com.example.zoomkotlinproject.utils.SharedPref
 import com.example.zoomkotlinproject.view.LoginActivity
+import com.example.zoomkotlinproject.view.MainActivity
+import com.example.zoomkotlinproject.view.MyMeetingActivity
 import retrofit2.Response
-import java.lang.Exception
 
 class MainRepository(private val api: ZoomIntegrationApi) : MainRepositoryImpl {
-    override suspend fun login(userName: String, password: String, deviceToken: String): Resource<LoginResponse> {
+    override suspend fun login(
+        userName: String,
+        password: String,
+        fcmToken: String,
+        deviceId: String?
+    ): Resource<LoginResponse> {
         val response: Response<LoginResponse>
         try {
-            response = api.login(userName, password, deviceToken)
+            response = api.login(userName, password, fcmToken, deviceId)
         } catch (e: Exception) {
             e.printStackTrace()
             return Resource.Error(LoginResponse(message = Constants.SOMETHING_WENT_WRONG))
@@ -105,6 +112,10 @@ class MainRepository(private val api: ZoomIntegrationApi) : MainRepositoryImpl {
             return Resource.Error(LogoutResponse(message = Constants.SOMETHING_WENT_WRONG))
         }
         return if (!response.isSuccessful) {
+            if (Constants.hasTokenExpired(response).contains("true", true)) {
+                SharedPref.clear(context)
+                context.startActivity(Intent(context, LoginActivity::class.java))
+            }
             Resource.Error(
                 LogoutResponse(
                     success = false,
@@ -218,7 +229,11 @@ class MainRepository(private val api: ZoomIntegrationApi) : MainRepositoryImpl {
             }
         }
     }
-    override suspend fun verifyToken(context: Context,token: String): Resource<VerifyTokenResponse> {
+
+    override suspend fun verifyToken(
+        context: Context,
+        token: String
+    ): Resource<VerifyTokenResponse> {
         val response: Response<VerifyTokenResponse>
         try {
             response = api.verifyToken(token)
@@ -227,11 +242,26 @@ class MainRepository(private val api: ZoomIntegrationApi) : MainRepositoryImpl {
             return Resource.Error(VerifyTokenResponse(message = Constants.SOMETHING_WENT_WRONG))
         }
         return if (!response.isSuccessful) {
+            if (Constants.hasTokenExpired(response).contains("true", true)) {
+                if (context is MainActivity) {
+                    context.finish()
+                } else if (context is MyMeetingActivity) {
+                    context.finish()
+                }
+                SharedPref.clear(context)
+                Toast.makeText(context, "Logged in from another device", Toast.LENGTH_LONG).show()
+                val intent = Intent(context, LoginActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+                context.startActivity(intent)
+            }
+
             Resource.Error(
-                VerifyTokenResponse(
+                response.body() ?: VerifyTokenResponse(
                     success = false,
-                    message = Constants.getErrorBodyMessage(response))
+                    message = Constants.getErrorBodyMessage(response)
+                )
             )
+
         } else {
             return if (response.body() == null) {
                 Resource.Error(
@@ -252,5 +282,4 @@ class MainRepository(private val api: ZoomIntegrationApi) : MainRepositoryImpl {
             }
         }
     }
-
 }

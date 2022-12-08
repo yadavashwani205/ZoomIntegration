@@ -9,7 +9,6 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -133,18 +132,6 @@ class MainActivity : AppCompatActivity(), MeetingClickListener {
 
     private fun render(viewState: MainViewState?) {
         if (viewState == null) return
-
-        viewState.verifyTokenResponse?.let {
-
-        }
-        viewState.verifyTokenError?.let {
-            finish()
-            SharedPref.clear(this@MainActivity)
-            Toast.makeText(this, "Logged in from another device", Toast.LENGTH_LONG).show()
-            val intent = Intent(this@MainActivity, LoginActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
-            startActivity(intent)
-        }
 
         viewState.meetingResponse?.let {
             mBinding.progressBar.visibility = View.GONE

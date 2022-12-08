@@ -4,13 +4,16 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class VerifyTokenResponse(
-    @SerializedName("success")
+    @SerializedName("message")
     @Expose
-    val success: Boolean? = null,
+    val message: String? = null,
     @SerializedName("hasTokenExpired")
     @Expose
     val hasTokenExpired: Boolean? = null,
-    @SerializedName("message")
+    @SerializedName("success")
     @Expose
-    val message: String? = null
-)
+    val success: Boolean? = null,
+    @SerializedName("code")
+    @Expose
+    val code: Int? = null
+    )
