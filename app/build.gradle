@@ -14,8 +14,8 @@ android {
         applicationId "com.nxtlevel.live"
         minSdk 21
         targetSdk 33
-        versionCode 9
-        versionName "1.09"
+        versionCode 10
+        versionName "1.10"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

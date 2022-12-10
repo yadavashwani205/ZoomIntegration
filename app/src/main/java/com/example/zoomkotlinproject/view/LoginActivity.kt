@@ -83,6 +83,7 @@ class LoginActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
         viewModel.viewState.observe(this) { render(it) }
         mBinding.loginLayout.setOnClickListener {
+            mBinding.loginLayout.isEnabled = false
             Constants.hideKeyboard(this)
             when {
                 mBinding.userName.text.toString().isEmpty() -> {
@@ -170,6 +171,7 @@ class LoginActivity : AppCompatActivity() {
 
         viewState.error?.let {
             mBinding.progress.visibility = View.GONE
+            mBinding.loginLayout.isEnabled = true
             showSnackBar(it)
         }
     }
