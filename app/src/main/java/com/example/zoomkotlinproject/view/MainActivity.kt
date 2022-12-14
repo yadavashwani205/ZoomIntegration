@@ -28,6 +28,7 @@ import com.example.zoomkotlinproject.viewstate.MainViewState
 import com.google.android.material.snackbar.Snackbar
 import us.zoom.sdk.*
 
+
 class MainActivity : AppCompatActivity(), MeetingClickListener {
     private lateinit var mBinding: ActivityMainBinding
     private lateinit var viewModel: MainViewModel
@@ -36,6 +37,7 @@ class MainActivity : AppCompatActivity(), MeetingClickListener {
     private var isAudible = false
     private var doubleBackToExitPressedOnce = false
     private val handler = Handler(Looper.getMainLooper())
+    private val permissionRequestReadContacts = 1000
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,7 +72,11 @@ class MainActivity : AppCompatActivity(), MeetingClickListener {
         }
         mBinding.scheduleBtn.setOnClickListener {
             val transaction = supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.main_container, MatchSchedulerFragment(), "MatchSchedulerFragment")
+            transaction.replace(
+                R.id.main_container,
+                MatchSchedulerFragment(),
+                "MatchSchedulerFragment"
+            )
             transaction.addToBackStack(null)
             transaction.commit()
         }
@@ -218,6 +224,7 @@ class MainActivity : AppCompatActivity(), MeetingClickListener {
             override fun onZoomSDKInitializeResult(p0: Int, p1: Int) {
                 if (p0 == 0) {
 //                    startZoomMeeting()
+//                    showContacts()
                 } else {
                     mBinding.progressBar.visibility = View.GONE
                     initializeErrorCode(p0)
@@ -313,4 +320,82 @@ class MainActivity : AppCompatActivity(), MeetingClickListener {
         }
         super.onDestroy()
     }
+
+/*
+    private fun showContacts() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(
+                arrayOf(Manifest.permission.READ_CONTACTS),
+                permissionRequestReadContacts
+            )
+        } else {
+            getContactList()
+        }
+    }
+*/
+
+/*
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == permissionRequestReadContacts) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission is granted
+                getContactList()
+            }
+        }
+    }
+*/
+
+ /*   @SuppressLint("Range")
+    private fun getContactList() {
+        val hashMap = hashMapOf<String, String>()
+        val cr = contentResolver
+        val cur: Cursor? = cr.query(
+            ContactsContract.Contacts.CONTENT_URI,
+            null, null, null, null
+        )
+        if ((cur?.count ?: 0) > 0) {
+            while (cur != null && cur.moveToNext()) {
+                val id: String = cur.getString(
+                    cur.getColumnIndex(ContactsContract.Contacts._ID)
+                )
+                val name: String? = cur.getString(
+                    cur.getColumnIndex(
+                        ContactsContract.Contacts.DISPLAY_NAME
+                    )
+                )
+                if (cur.getInt(
+                        cur.getColumnIndex(
+                            ContactsContract.Contacts.HAS_PHONE_NUMBER
+                        )
+                    ) > 0
+                ) {
+                    val pCur: Cursor? = cr.query(
+                        ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                        null,
+                        ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
+                        arrayOf(id),
+                        null
+                    )
+                    while (pCur?.moveToNext() == true) {
+                        val phoneNo: String = pCur.getString(
+                            pCur.getColumnIndex(
+                                ContactsContract.CommonDataKinds.Phone.NUMBER
+                            )
+                        )
+                        hashMap[name ?: ""] = phoneNo
+                    }
+                    pCur?.close()
+                }
+            }
+        }
+        hashMap.forEach {
+            Log.d("asasas",it.key+"    "+ it.value)
+        }
+        cur?.close()
+    }*/
 }

@@ -83,7 +83,6 @@ class LoginActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
         viewModel.viewState.observe(this) { render(it) }
         mBinding.loginLayout.setOnClickListener {
-            mBinding.loginLayout.isEnabled = false
             Constants.hideKeyboard(this)
             when {
                 mBinding.userName.text.toString().isEmpty() -> {
@@ -96,6 +95,7 @@ class LoginActivity : AppCompatActivity() {
                 }
                 else -> {
                     if (Constants.isOnline(this)) {
+                        mBinding.loginLayout.isEnabled = false
                         if (fcmToken == null) {
                             FirebaseMessaging.getInstance().token.addOnCompleteListener(
                                 OnCompleteListener { task ->
